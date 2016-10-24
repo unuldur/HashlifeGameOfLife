@@ -5,8 +5,17 @@
 #ifndef GAMEOFLIFE_TREENODE_H
 #define GAMEOFLIFE_TREENODE_H
 
+#include <string.h>
+#include <iostream>
+
+
+using namespace std;
 class TreeNode{
 public:
+
+    TreeNode(TreeNode *nw, TreeNode *ne, TreeNode *sw, TreeNode *se);
+
+    TreeNode(bool living);
 
     static TreeNode* create();
 
@@ -38,6 +47,8 @@ public:
 
     double getPopulation() const;
 
+    string getThis() const;
+
 private:
     TreeNode* nw;
     TreeNode* ne;
@@ -59,9 +70,6 @@ private:
 
     TreeNode *centeredSubSubnode()const;
 
-    TreeNode(TreeNode *nw, TreeNode *ne, TreeNode *sw, TreeNode *se);
-
-    TreeNode(bool living);
 
 
 

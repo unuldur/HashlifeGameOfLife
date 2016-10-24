@@ -1,10 +1,10 @@
 //
 // Created by PAYS on 13/10/2016.
 //
-#include <iostream>
-#include "TreeNode.h"
 
-using namespace std;
+#include <sstream>
+#include <vector>
+#include "TreeNode.h"
 
 TreeNode::TreeNode(bool living) : living(living),nw(nullptr),ne(nullptr),sw(nullptr),se(nullptr) {
     level = 0;
@@ -185,3 +185,56 @@ TreeNode *TreeNode::create(bool living){
 TreeNode *TreeNode::create(TreeNode *nw, TreeNode *ne, TreeNode *sw, TreeNode *se){
     return new TreeNode(nw,ne,sw,se);
 }
+
+int Split(vector<string>& vecteur, string chaine, char separateur)
+{
+    vecteur.clear();
+
+    string::size_type stTemp = chaine.find(separateur);
+
+    while(stTemp != string::npos)
+    {
+        vecteur.push_back(chaine.substr(0, stTemp));
+        chaine = chaine.substr(stTemp + 1);
+        stTemp = chaine.find(separateur);
+    }
+
+    vecteur.push_back(chaine);
+
+    return vecteur.size();
+}
+
+string TreeNode::getThis() const {
+    if(level == 0)
+    {
+        return living?"1\n":"0\n";
+    }
+    string snw = nw->getThis();
+    string sne = ne->getThis();
+    string ssw = sw->getThis();
+    string sse = se->getThis();
+
+    vector<string> vecsnw;
+    vector<string> vecsne;
+    vector<string> vecssw;
+    vector<string> vecsse;
+
+    int nbelement = Split(vecsnw, snw, '\n');
+    Split(vecsne, sne, '\n');
+    Split(vecssw, ssw, '\n');
+    Split(vecsse, sse, '\n');
+
+    string my = "";
+    for (int i = 0; i < nbelement - 1; ++i) {
+        my += vecsnw[i]+vecsne[i]+"\n";
+    }
+
+    for (int i = 0; i < nbelement - 1; ++i) {
+        my += vecssw[i]+vecsse[i]+"\n";
+    }
+
+    return my;
+}
+
+
+

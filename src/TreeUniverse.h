@@ -18,6 +18,9 @@ public:
     void setByte(const int x,const int y);
     int getByte(const int x,const int y) const;
     int getLevel() const ;
+
+    TreeNode *getRoot() const;
+
 private:
     TreeNode* root;
 };

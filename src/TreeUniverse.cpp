@@ -44,3 +44,7 @@ int TreeUniverse::getLevel() const {
     return root->getLevel();
 }
 
+TreeNode *TreeUniverse::getRoot() const {
+    return root;
+}
+
