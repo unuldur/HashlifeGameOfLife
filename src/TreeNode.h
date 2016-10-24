@@ -7,7 +7,7 @@
 
 #include <string.h>
 #include <iostream>
-
+#include <vector>
 
 using namespace std;
 class TreeNode{
@@ -69,6 +69,8 @@ private:
     TreeNode *centeredHorizontal(TreeNode *pNode, TreeNode *pTreeNode)const;
 
     TreeNode *centeredSubSubnode()const;
+
+    vector<string> getLignesTreeNode() const;
 
 
 

@@ -3,7 +3,8 @@
 //
 
 #include <sstream>
-#include <vector>
+
+#include <list>
 #include "TreeNode.h"
 
 TreeNode::TreeNode(bool living) : living(living),nw(nullptr),ne(nullptr),sw(nullptr),se(nullptr) {
@@ -186,53 +187,39 @@ TreeNode *TreeNode::create(TreeNode *nw, TreeNode *ne, TreeNode *sw, TreeNode *s
     return new TreeNode(nw,ne,sw,se);
 }
 
-int Split(vector<string>& vecteur, string chaine, char separateur)
+
+
+vector<string> TreeNode::getLignesTreeNode() const
 {
-    vecteur.clear();
-
-    string::size_type stTemp = chaine.find(separateur);
-
-    while(stTemp != string::npos)
+    vector<string> my;
+    if(level == 0)
     {
-        vecteur.push_back(chaine.substr(0, stTemp));
-        chaine = chaine.substr(stTemp + 1);
-        stTemp = chaine.find(separateur);
+        living?my.push_back("1"):my.push_back("0");
+        return my;
     }
+    vector<string> snw = nw->getLignesTreeNode();
+    vector<string> sne = ne->getLignesTreeNode();
+    vector<string> ssw = sw->getLignesTreeNode();
+    vector<string> sse = se->getLignesTreeNode();
 
-    vecteur.push_back(chaine);
+    int nb = snw.size();
+    for (int i = 0; i < nb; ++i) {
+        my.push_back(snw[i]+sne[i]);
+    }
+    for (int i = 0; i < nb; ++i) {
+        my.push_back(ssw[i]+sse[i]);
+    }
+    return my;
 
-    return vecteur.size();
 }
 
 string TreeNode::getThis() const {
-    if(level == 0)
-    {
-        return living?"1\n":"0\n";
+    vector<string> myVec = getLignesTreeNode();
+    string my ="";
+    int taille = myVec.size();
+    for (int i = 0; i < taille; ++i) {
+        my += myVec[i]+"\n";
     }
-    string snw = nw->getThis();
-    string sne = ne->getThis();
-    string ssw = sw->getThis();
-    string sse = se->getThis();
-
-    vector<string> vecsnw;
-    vector<string> vecsne;
-    vector<string> vecssw;
-    vector<string> vecsse;
-
-    int nbelement = Split(vecsnw, snw, '\n');
-    Split(vecsne, sne, '\n');
-    Split(vecssw, ssw, '\n');
-    Split(vecsse, sse, '\n');
-
-    string my = "";
-    for (int i = 0; i < nbelement - 1; ++i) {
-        my += vecsnw[i]+vecsne[i]+"\n";
-    }
-
-    for (int i = 0; i < nbelement - 1; ++i) {
-        my += vecssw[i]+vecsse[i]+"\n";
-    }
-
     return my;
 }
 

@@ -12,7 +12,7 @@ void afficheRoot(TreeNode* tree)
     }
     for (int i =  0 - nbCase/2; i < nbCase/2; ++i) {
         for (int j = 0 - nbCase/2; j < nbCase/2; ++j) {
-            cout << tree->getByte(i,j) << " ";
+            cout << tree->getByte(i,j);
         }
         cout << endl;
     }
@@ -29,11 +29,11 @@ int main() {
     universe->setByte(0,1);
 
     TreeNode* root = universe->getRoot();
+    afficheRoot(universe->getRoot());
     cout << root->getThis() << endl;
     universe->runStep();
 
-    afficheRoot(universe->getRoot());
-    afficheRoot(root);
+
 
     return 0;
 }
