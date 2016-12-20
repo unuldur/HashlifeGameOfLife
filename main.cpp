@@ -22,17 +22,22 @@ void afficheRoot(TreeNode* tree)
 
 int main() {
     TreeUniverse* universe = new TreeUniverse;
-    universe->setByte(-1,-1);
-    universe->setByte(0,0);
-    universe->setByte(1,0);
-    universe->setByte(-1,1);
-    universe->setByte(0,1);
-
+    universe->setByte(1,1,true);
+    universe->setByte(5,5,true);
+    universe->setByte(5,5,false);
+    cout << "fin0";
+    /*
+    universe->setByte(-1,-1,true);
+    universe->setByte(0,0,true);
+    universe->setByte(1,0,true);
+    universe->setByte(-1,1,true);
+    universe->setByte(0,1,true);
     TreeNode* root = universe->getRoot();
     afficheRoot(universe->getRoot());
-    cout << root->getThis() << endl;
-    universe->runStep();
 
+    //cout << root->getThis() << endl;
+    universe->runStep();
+    afficheRoot(universe->getRoot());*/
 
 
     return 0;

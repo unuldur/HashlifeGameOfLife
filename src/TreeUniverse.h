@@ -15,7 +15,7 @@ public:
     virtual ~TreeUniverse();
 
     void runStep();
-    void setByte(const int x,const int y);
+    void setByte(const int x,const int y, bool living);
     int getByte(const int x,const int y) const;
     int getLevel() const ;
 

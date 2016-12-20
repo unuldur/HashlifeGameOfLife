@@ -17,9 +17,13 @@ public:
 
     TreeNode(bool living);
 
+    TreeNode(const int & level);
+
     static TreeNode* create();
 
     static TreeNode* create(bool living);
+
+    static TreeNode* create(const int& level);
 
     static TreeNode* create(TreeNode* nw, TreeNode* ne, TreeNode* sw, TreeNode* se);
 
@@ -29,11 +33,10 @@ public:
 
     int getByte(const int x,const int y) const;
 
-    TreeNode * setByte(const int x,const int y) const;
+    TreeNode * setByte(const int x, const int y, bool living);
+
 
     TreeNode *expandUniverse() const;
-
-    TreeNode *emptyTree(const int lev) const;
 
     int getLevel() const;
 

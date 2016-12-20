@@ -4,7 +4,6 @@
 
 #include <sstream>
 
-#include <list>
 #include "TreeNode.h"
 
 TreeNode::TreeNode(bool living) : living(living),nw(nullptr),ne(nullptr),sw(nullptr),se(nullptr) {
@@ -13,9 +12,29 @@ TreeNode::TreeNode(bool living) : living(living),nw(nullptr),ne(nullptr),sw(null
 }
 
 TreeNode::TreeNode(TreeNode *nw, TreeNode *ne, TreeNode *sw, TreeNode *se) :  sw(sw), ne(ne), nw(nw), se(se){
-    population = nw->population + ne->population + sw->population + se->population;
+    population = 0;
+    if(nw != nullptr)
+    {
+        population += nw->getPopulation();
+        level = nw->level + 1;
+    }
+    if(ne != nullptr)
+    {
+        population += ne->getPopulation();
+        level = ne->level + 1;
+    }
+    if(sw != nullptr)
+    {
+        population += sw->getPopulation();
+        level = sw->level + 1;
+    }
+    if(se != nullptr)
+    {
+        population += se->getPopulation();
+        level = se->level + 1;
+    }
     living = population != 0;
-    level = nw->level + 1;
+
 }
 
 TreeNode::~TreeNode() {
@@ -28,7 +47,7 @@ TreeNode::~TreeNode() {
 TreeNode* TreeNode::oneGen(int bitmask) const{
     if(bitmask == 0)
     {
-        return create(false);
+        return nullptr;
     }
     int self = (bitmask >> 5) & 1;
     bitmask &= 0x757;
@@ -38,7 +57,11 @@ TreeNode* TreeNode::oneGen(int bitmask) const{
         nbNeighbours++;
         bitmask &= (bitmask - 1);
     }
-    return create(nbNeighbours == 3 || (nbNeighbours == 2 && self != 0));
+    if(nbNeighbours == 3 || (nbNeighbours == 2 && self != 0))
+    {
+        return create(true);
+    }
+    return nullptr;
 }
 
 TreeNode* TreeNode::slowSimulation() const{
@@ -46,68 +69,192 @@ TreeNode* TreeNode::slowSimulation() const{
     for (int y=-2; y<2; y++)
         for (int x=-2; x<2; x++)
             allbits = (allbits << 1) + getByte(x, y) ;
+
     return create(oneGen(allbits>>5), oneGen(allbits>>4),
                   oneGen(allbits>>1), oneGen(allbits)) ;
 }
 
 TreeNode* TreeNode::centeredSubnode() const{
-    return create(nw->se, ne->sw, sw->ne, se->nw) ;
+    TreeNode* n00 = create(level-2);
+    if(nw != nullptr)
+    {
+        n00 = nw->se;
+    }
+    TreeNode* n01 = create(level-2);
+    if(ne != nullptr)
+    {
+        n01 = ne->sw;
+    }
+    TreeNode* n10 = create(level-2);
+    if(sw != nullptr)
+    {
+        n10 = sw->ne;
+    }
+    TreeNode* n11 = create(level-2);
+    if(se != nullptr)
+    {
+        n11 = se->nw;
+    }
+    return create(n00,n01,n10,n11);
 }
 
 TreeNode* TreeNode::centeredVertical(TreeNode* n,TreeNode* s) const
 {
-    return create(n->sw->se, n->se->sw, s->nw->ne, s->ne->nw) ;
+    TreeNode* n00 = create(level-3);
+    if(n != nullptr && n->sw != nullptr)
+    {
+        n00 = n->sw->se;
+    }
+    TreeNode* n01 = create(level-3);
+    if(n != nullptr && n->se != nullptr)
+    {
+        n01 = n->se->sw;
+    }
+    TreeNode* n10 = create(level-3);
+    if(s != nullptr && s->nw != nullptr)
+    {
+        n10 = s->nw->ne;
+    }
+    TreeNode* n11 = create(level-3);
+    if(s != nullptr && s->ne != nullptr)
+    {
+        n11 = s->ne->nw;
+    }
+    return create(n00,n01,n10,n11);
 }
 
 TreeNode *TreeNode::centeredHorizontal(TreeNode *w, TreeNode *e) const{
-    return create(w->ne->se, e->nw->sw, w->se->ne, e->sw->nw) ;
+    TreeNode* n00 = create(level-3);
+    if(w != nullptr && w->ne != nullptr)
+    {
+        n00 = w->ne->se;
+    }
+    TreeNode* n01 = create(level-3);
+    if(e != nullptr && e->nw != nullptr)
+    {
+        n01 = e->nw->sw;
+    }
+    TreeNode* n10 = create(level-3);
+    if(w != nullptr && w->se != nullptr)
+    {
+        n10 = w->se->ne;
+    }
+    TreeNode* n11 = create(level-3);
+    if(e != nullptr && e->sw != nullptr)
+    {
+        n11 = e->sw->nw;
+    }
+    return create(n00,n01,n10,n11);
 }
 
 TreeNode *TreeNode::centeredSubSubnode() const{
-    return create(nw->se->se, ne->sw->sw, sw->ne->ne, se->nw->nw) ;
-
+    TreeNode* n00 = create(level-3);
+    if(nw != nullptr && nw->se != nullptr)
+    {
+        n00 = nw->se->se;
+    }
+    TreeNode* n01 = create(level-3);
+    if(ne != nullptr && ne->sw != nullptr)
+    {
+        n01 = ne->sw->sw;
+    }
+    TreeNode* n10 = create(level-3);
+    if(sw != nullptr && sw->ne != nullptr)
+    {
+        n10 = sw->ne->ne;
+    }
+    TreeNode* n11 = create(level-3);
+    if(se != nullptr && se->nw != nullptr)
+    {
+        n11 = se->nw->nw;
+    }
+    return create(n00,n01,n10,n11);
 }
 
 TreeNode* TreeNode::nextGeneration() const{
     if(population == 0)
     {
-        return nw;
+        return create(level - 1);
     }
     if(level == 2)
     {
         return slowSimulation();
     }
-    TreeNode* n00 = nw->centeredSubnode();
+    TreeNode* n00 = nullptr;
+    if(nw != nullptr) {
+        n00 = nw->centeredSubnode();
+    }
     TreeNode* n01 = centeredHorizontal(nw, ne);
-    TreeNode* n02 = ne->centeredSubnode();
+    TreeNode* n02 = nullptr;
+    if(ne != nullptr) {
+        n02 = ne->centeredSubnode();
+    }
     TreeNode* n10 = centeredVertical(nw, sw);
     TreeNode* n11 = centeredSubSubnode();
     TreeNode* n12 = centeredVertical(ne, se);
-    TreeNode* n20 = sw->centeredSubnode();
+    TreeNode* n20 = nullptr;
+    if(sw != nullptr) {
+        n20 = sw->centeredSubnode();
+    }
     TreeNode* n21 = centeredHorizontal(sw, se);
-    TreeNode* n22 = se->centeredSubnode() ;
-    return create((create(n00, n01, n10, n11))->nextGeneration(),
-                        (create(n01, n02, n11, n12))->nextGeneration(),
-                        (create(n10, n11, n20, n21))->nextGeneration(),
-                        (create(n11, n12, n21, n22))->nextGeneration()) ;
+    TreeNode* n22 = nullptr;
+    if(se != nullptr)
+    {
+        n22 = se->centeredSubnode() ;
+    }
+    TreeNode* nn00 = create(n00, n01, n10, n11);
+    TreeNode* nn01 = create(n01, n02, n11, n12);
+    TreeNode* nn10 = create(n10, n11, n20, n21);
+    TreeNode* nn11 = create(n11, n12, n21, n22);
+    if(nn00 != nullptr)
+    {
+        nn00 = nn00->nextGeneration();
+    }
+    if(nn01 != nullptr)
+    {
+        nn01 = nn01->nextGeneration();
+    }
+    if(nn10 != nullptr)
+    {
+        nn10 = nn10->nextGeneration();
+    }
+    if(nn11 != nullptr)
+    {
+        nn11 = nn11->nextGeneration();
+    }
+    return create(nn00,nn01,nn10,nn11);
 
 }
 
 
 TreeNode *TreeNode::expandUniverse() const{
-    TreeNode* border = emptyTree(level-1) ;
-    return create(create(border, border, border, nw),
-                            create(border, border, ne, border),
-                            create(border, sw, border, border),
-                            create(se, border, border, border)) ;
+    if(nw == nullptr && ne == nullptr && sw == nullptr && se == nullptr){
+        return create(level + 1);
+    }
+    TreeNode* n00 = nullptr;
+    if(nw != nullptr)
+    {
+        n00 = create(nullptr, nullptr, nullptr, nw);
+    }
+    TreeNode* n01 = nullptr;
+    if(ne != nullptr)
+    {
+        n01 = create(nullptr, nullptr, ne, nullptr);
+    }
+    TreeNode* n10 = nullptr;
+    if(sw != nullptr)
+    {
+        n10 = create(nullptr, sw, nullptr, nullptr);
+    }
+    TreeNode* n11 = nullptr;
+    if(se != nullptr)
+    {
+        n11 = create(se, nullptr, nullptr, nullptr);
+    }
+    return create(n00,n01,n10,n11);
 }
 
-TreeNode *TreeNode::emptyTree(const int lev) const{
-    if (lev == 0)
-        return create(false) ;
-    TreeNode* n = emptyTree(lev-1) ;
-    return create(n, n, n, n) ;
-}
+
 
 int TreeNode::getByte(const int x, const int y) const{
     if(level == 0)
@@ -117,36 +264,71 @@ int TreeNode::getByte(const int x, const int y) const{
     int offset = 1 << (level -2);
     if (x < 0) {
         if (y < 0) {
+            if(nw == nullptr)
+            {
+                return 0;
+            }
             return nw->getByte(x + offset, y + offset);
         } else {
+            if(sw == nullptr)
+            {
+                return 0;
+            }
             return sw->getByte(x + offset, y - offset);
         }
     } else {
         if (y < 0) {
+            if(ne == nullptr)
+            {
+                return 0;
+            }
             return ne->getByte(x - offset, y + offset);
         } else {
+            if(se == nullptr)
+            {
+                return 0;
+            }
             return se->getByte(x - offset, y - offset);
         }
     }
 }
 
-TreeNode *TreeNode::setByte(const int x,const int y) const{
+TreeNode * TreeNode::setByte(const int x, const int y, bool living) {
     if(level == 0)
     {
-        return create(true);
+        if(living) {
+            return create(true);
+        }
+        return nullptr;
     }
     int offset = 1 << (level -2);
     if (x < 0) {
         if (y < 0) {
-            return create(nw->setByte(x + offset, y + offset),ne,sw,se);
+            if(nw == nullptr)
+            {
+                nw = create(level - 1);
+            }
+            return create(nw->setByte(x + offset, y + offset,living),ne,sw,se);
         } else {
-            return create(nw,ne,sw->setByte(x + offset, y - offset),se);
+            if(sw == nullptr)
+            {
+                sw = create(level - 1);
+            }
+            return create(nw,ne,sw->setByte(x + offset, y - offset,living),se);
         }
     } else {
         if (y < 0) {
-            return create(nw,ne->setByte(x - offset, y + offset),sw,se);
+            if(ne == nullptr)
+            {
+                ne = create(level - 1);
+            }
+            return create(nw,ne->setByte(x - offset, y + offset,living),sw,se);
         } else {
-            return create(nw,ne,sw,se->setByte(x - offset, y - offset));
+            if(se == nullptr)
+            {
+                se = create(level - 1);
+            }
+            return create(nw,ne,sw,se->setByte(x - offset, y - offset,living));
         }
     }
 }
@@ -176,7 +358,7 @@ double TreeNode::getPopulation() const {
 }
 
 TreeNode *TreeNode::create() {
-    return (new TreeNode(false))->emptyTree(3);
+    return new TreeNode(3);
 }
 
 TreeNode *TreeNode::create(bool living){
@@ -184,7 +366,15 @@ TreeNode *TreeNode::create(bool living){
 }
 
 TreeNode *TreeNode::create(TreeNode *nw, TreeNode *ne, TreeNode *sw, TreeNode *se){
-    return new TreeNode(nw,ne,sw,se);
+    if(nw == nullptr && ne == nullptr && sw == nullptr && se == nullptr){
+        return nullptr;
+    }
+    TreeNode* tree = new TreeNode(nw,ne,sw,se);
+    if(tree->getPopulation() == 0)
+    {
+        return nullptr;
+    }
+    return tree;
 }
 
 
@@ -222,6 +412,14 @@ string TreeNode::getThis() const {
     }
     return my;
 }
+
+TreeNode::TreeNode(const int &level): living(false),nw(nullptr),ne(nullptr),sw(nullptr),se(nullptr),level(level),population(0) {
+}
+
+TreeNode *TreeNode::create(const int &level) {
+    return new TreeNode(level);
+}
+
 
 
 
