@@ -353,6 +353,10 @@ TreeNode *TreeNode::getSe() const {
     return se;
 }
 
+bool TreeNode::isLiving() const {
+    return living;
+}
+
 double TreeNode::getPopulation() const {
     return population;
 }
@@ -377,40 +381,132 @@ TreeNode *TreeNode::create(TreeNode *nw, TreeNode *ne, TreeNode *sw, TreeNode *s
     return tree;
 }
 
-
-
-vector<string> TreeNode::getLignesTreeNode() const
+string TreeNode::getLivingCell(const int& x, const int& y) const
 {
-    vector<string> my;
+    stringstream ss;
+    int x2, y2;
     if(level == 0)
     {
-        living?my.push_back("1"):my.push_back("0");
-        return my;
+        ss << "x=" << x << ",y="<<y << " ";
+        return ss.str();
     }
-    vector<string> snw = nw->getLignesTreeNode();
-    vector<string> sne = ne->getLignesTreeNode();
-    vector<string> ssw = sw->getLignesTreeNode();
-    vector<string> sse = se->getLignesTreeNode();
-
-    int nb = snw.size();
-    for (int i = 0; i < nb; ++i) {
-        my.push_back(snw[i]+sne[i]);
+    int offset = 1 << (level -2);
+    if(level == 1)
+    {
+        offset = 0;
     }
-    for (int i = 0; i < nb; ++i) {
-        my.push_back(ssw[i]+sse[i]);
+    if(nw != nullptr)
+    {
+        x2 = x;
+        y2 = y;
+        if(level == 1)
+        {
+            x2--;
+            y2--;
+        }
+        ss << nw->getLivingCell(x2 - offset, y2 - offset);
     }
-    return my;
-
+    if(sw != nullptr)
+    {
+        x2 = x;
+        if(level == 1)
+        {
+            x2--;
+        }
+        ss << sw->getLivingCell(x2 - offset, y + offset);
+    }
+    if(ne != nullptr)
+    {
+        y2 = y;
+        if(level == 1)
+        {
+            y2--;
+        }
+        ss << ne->getLivingCell(x + offset, y2 - offset);
+    }
+    if(se != nullptr)
+    {
+        ss << se->getLivingCell(x + offset, y + offset);
+    }
+    return ss.str();
 }
 
-string TreeNode::getThis() const {
-    vector<string> myVec = getLignesTreeNode();
-    string my ="";
-    int taille = myVec.size();
-    for (int i = 0; i < taille; ++i) {
-        my += myVec[i]+"\n";
+string TreeNode::getDifference(const TreeNode* t, const int& x, const int& y) const {
+    stringstream ss;
+    int x2, y2;
+    if(t == nullptr)
+    {
+        return getLivingCell(x,y);
     }
-    return my;
+    if(level == 0)
+    {
+        if(living != t->isLiving()) {
+            ss << "x=" << x << ",y=" << y << " ";
+        }
+        return ss.str();
+    }
+
+    int offset = 1 << (level -2);
+    if(level == 1)
+    {
+        offset = 0;
+    }
+    x2 = x;
+    y2 = y;
+    if(level == 1)
+    {
+        x2--;
+        y2--;
+    }
+    if(nw == nullptr)
+    {
+        if(t->nw != nullptr) {
+            ss << t->nw->getLivingCell(x2 - offset, y2 - offset);
+        }
+    }else{
+        ss << nw->getDifference(t->nw,x2 - offset, y2 - offset);
+    }
+
+
+    y2 = y;
+    if(level == 1)
+    {
+        y2--;
+    }
+    if(ne == nullptr)
+    {
+        if(t->ne != nullptr) {
+            ss << t->ne->getLivingCell(x + offset, y2 - offset);
+        }
+    }else {
+        ss << ne->getDifference(t->ne, x + offset, y2 - offset);
+    }
+
+
+    if(se == nullptr)
+    {
+        if(t->se != nullptr) {
+            ss << t->se->getLivingCell(x + offset, y + offset);
+        }
+    }else {
+        ss << se->getDifference(t->se, x + offset, y + offset);
+    }
+
+
+    x2 = x;
+    if(level == 1)
+    {
+        x2--;
+    }
+    if(sw == nullptr)
+    {
+        if(t->sw != nullptr) {
+            ss << t->sw->getLivingCell(x2 - offset, y + offset);
+        }
+    }else {
+        ss << sw->getDifference(t->sw, x2 - offset, y + offset);
+    }
+    return ss.str();
 }
 
 TreeNode::TreeNode(const int &level): living(false),nw(nullptr),ne(nullptr),sw(nullptr),se(nullptr),level(level),population(0) {

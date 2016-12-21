@@ -40,6 +40,8 @@ public:
 
     int getLevel() const;
 
+    bool isLiving() const;
+
     TreeNode *getNw() const;
 
     TreeNode *getNe() const;
@@ -50,7 +52,8 @@ public:
 
     double getPopulation() const;
 
-    string getThis() const;
+    string getDifference(const TreeNode* t, const int& x,const int& y) const;
+
 
 private:
     TreeNode* nw;
@@ -73,9 +76,7 @@ private:
 
     TreeNode *centeredSubSubnode()const;
 
-    vector<string> getLignesTreeNode() const;
-
-
+    string getLivingCell(const int& x,const int& y) const;
 
 
 };
