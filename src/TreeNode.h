@@ -21,13 +21,13 @@ public:
 
     static TreeNode* create();
 
-    static TreeNode* create(bool living);
+    virtual TreeNode* create(bool living);
 
-    static TreeNode* create(const int& level);
+    virtual TreeNode* create(int level);
 
-    static TreeNode* create(TreeNode* nw, TreeNode* ne, TreeNode* sw, TreeNode* se);
+    virtual TreeNode* create(TreeNode* nw, TreeNode* ne, TreeNode* sw, TreeNode* se);
 
-    TreeNode* nextGeneration() const;
+    virtual TreeNode* nextGeneration();
 
     virtual ~TreeNode();
 
@@ -36,7 +36,7 @@ public:
     TreeNode * setByte(const int x, const int y, bool living);
 
 
-    TreeNode *expandUniverse() const;
+    TreeNode *expandUniverse();
 
     int getLevel() const;
 
@@ -55,7 +55,7 @@ public:
     string getDifference(const TreeNode* t, const int& x,const int& y) const;
 
 
-private:
+protected:
     TreeNode* nw;
     TreeNode* ne;
     TreeNode* sw;
@@ -64,17 +64,17 @@ private:
     double population;
     int level;
 
-    TreeNode* oneGen(int bitmask) const;
+    TreeNode* oneGen(int bitmask);
 
-    TreeNode* slowSimulation() const;
+    TreeNode* slowSimulation();
 
-    TreeNode *centeredSubnode()const;
+    TreeNode *centeredSubnode();
 
-    TreeNode *centeredVertical(TreeNode *n, TreeNode *s) const;
+    TreeNode *centeredVertical(TreeNode *n, TreeNode *s);
 
-    TreeNode *centeredHorizontal(TreeNode *pNode, TreeNode *pTreeNode)const;
+    TreeNode *centeredHorizontal(TreeNode *pNode, TreeNode *pTreeNode);
 
-    TreeNode *centeredSubSubnode()const;
+    TreeNode *centeredSubSubnode();
 
     string getLivingCell(const int& x,const int& y) const;
 

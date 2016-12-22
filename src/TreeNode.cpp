@@ -44,7 +44,7 @@ TreeNode::~TreeNode() {
     delete se;
 }
 
-TreeNode* TreeNode::oneGen(int bitmask) const{
+TreeNode* TreeNode::oneGen(int bitmask){
     if(bitmask == 0)
     {
         return nullptr;
@@ -64,7 +64,7 @@ TreeNode* TreeNode::oneGen(int bitmask) const{
     return nullptr;
 }
 
-TreeNode* TreeNode::slowSimulation() const{
+TreeNode* TreeNode::slowSimulation(){
     int allbits = 0 ;
     for (int y=-2; y<2; y++)
         for (int x=-2; x<2; x++)
@@ -74,7 +74,7 @@ TreeNode* TreeNode::slowSimulation() const{
                   oneGen(allbits>>1), oneGen(allbits)) ;
 }
 
-TreeNode* TreeNode::centeredSubnode() const{
+TreeNode* TreeNode::centeredSubnode(){
     TreeNode* n00 = create(level-2);
     if(nw != nullptr)
     {
@@ -98,7 +98,7 @@ TreeNode* TreeNode::centeredSubnode() const{
     return create(n00,n01,n10,n11);
 }
 
-TreeNode* TreeNode::centeredVertical(TreeNode* n,TreeNode* s) const
+TreeNode* TreeNode::centeredVertical(TreeNode* n,TreeNode* s)
 {
     TreeNode* n00 = create(level-3);
     if(n != nullptr && n->sw != nullptr)
@@ -123,7 +123,7 @@ TreeNode* TreeNode::centeredVertical(TreeNode* n,TreeNode* s) const
     return create(n00,n01,n10,n11);
 }
 
-TreeNode *TreeNode::centeredHorizontal(TreeNode *w, TreeNode *e) const{
+TreeNode *TreeNode::centeredHorizontal(TreeNode *w, TreeNode *e){
     TreeNode* n00 = create(level-3);
     if(w != nullptr && w->ne != nullptr)
     {
@@ -147,7 +147,7 @@ TreeNode *TreeNode::centeredHorizontal(TreeNode *w, TreeNode *e) const{
     return create(n00,n01,n10,n11);
 }
 
-TreeNode *TreeNode::centeredSubSubnode() const{
+TreeNode *TreeNode::centeredSubSubnode(){
     TreeNode* n00 = create(level-3);
     if(nw != nullptr && nw->se != nullptr)
     {
@@ -171,7 +171,7 @@ TreeNode *TreeNode::centeredSubSubnode() const{
     return create(n00,n01,n10,n11);
 }
 
-TreeNode* TreeNode::nextGeneration() const{
+TreeNode* TreeNode::nextGeneration(){
     if(population == 0)
     {
         return create(level - 1);
@@ -227,7 +227,7 @@ TreeNode* TreeNode::nextGeneration() const{
 }
 
 
-TreeNode *TreeNode::expandUniverse() const{
+TreeNode *TreeNode::expandUniverse(){
     if(nw == nullptr && ne == nullptr && sw == nullptr && se == nullptr){
         return create(level + 1);
     }
@@ -512,7 +512,7 @@ string TreeNode::getDifference(const TreeNode* t, const int& x, const int& y) co
 TreeNode::TreeNode(const int &level): living(false),nw(nullptr),ne(nullptr),sw(nullptr),se(nullptr),level(level),population(0) {
 }
 
-TreeNode *TreeNode::create(const int &level) {
+TreeNode *TreeNode::create(int level) {
     return new TreeNode(level);
 }
 

@@ -1,8 +1,10 @@
 
 #include <iostream>
 #include "src/TreeUniverse.h"
+#include "src/TreeHashMap.h"
 
 using namespace std;
+
 
 void afficheRoot(TreeNode* tree)
 {
@@ -28,12 +30,9 @@ int main() {
     universe->setByte(-1,1,true);
     universe->setByte(0,1,true);
     TreeNode* root = universe->getRoot();
+    //universe->runStep();
+    auto truc  = TreeHashMap::hash;
     afficheRoot(universe->getRoot());
-
-    //cout << root->getThis() << endl;
-    universe->runStep();
-    afficheRoot(universe->getRoot());
-    cout << universe->getRoot()->getDifference(root,0,0);
 
 
     return 0;

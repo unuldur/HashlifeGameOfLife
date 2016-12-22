@@ -3,7 +3,8 @@
 //
 
 #include "TreeUniverse.h"
-
+#include "CanonicalTreeNode.h"
+#include "HashLifeTreeNode.h"
 
 
 void TreeUniverse::runStep() {
@@ -57,7 +58,7 @@ void TreeUniverse::runStep() {
 void TreeUniverse::setByte(const int x,const int y, bool living) {
     if(root == nullptr)
     {
-        root = TreeNode::create();
+        root = HashLifeTreeNode::create();
     }
     while (true) {
         int maxCoordinate = 1 << (root->getLevel() - 1) ;

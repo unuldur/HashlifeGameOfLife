@@ -14,8 +14,9 @@ class TreeHashMap {
 public:
     static void add(int key, TreeNode* value);
     static TreeNode* get(int key);
-private:
     static  map<int,TreeNode*> hash;
+private:
+
 };
 
 
