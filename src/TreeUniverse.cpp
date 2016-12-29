@@ -58,7 +58,7 @@ void TreeUniverse::runStep() {
 void TreeUniverse::setByte(const int x,const int y, bool living) {
     if(root == nullptr)
     {
-        root = HashLifeTreeNode::create();
+        root = TreeNode::create();
     }
     while (true) {
         int maxCoordinate = 1 << (root->getLevel() - 1) ;

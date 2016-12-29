@@ -75,22 +75,22 @@ TreeNode* TreeNode::slowSimulation(){
 }
 
 TreeNode* TreeNode::centeredSubnode(){
-    TreeNode* n00 = create(level-2);
+    TreeNode* n00 = nullptr;
     if(nw != nullptr)
     {
         n00 = nw->se;
     }
-    TreeNode* n01 = create(level-2);
+    TreeNode* n01 = nullptr;
     if(ne != nullptr)
     {
         n01 = ne->sw;
     }
-    TreeNode* n10 = create(level-2);
+    TreeNode* n10 = nullptr;
     if(sw != nullptr)
     {
         n10 = sw->ne;
     }
-    TreeNode* n11 = create(level-2);
+    TreeNode* n11 = nullptr;
     if(se != nullptr)
     {
         n11 = se->nw;
@@ -100,22 +100,22 @@ TreeNode* TreeNode::centeredSubnode(){
 
 TreeNode* TreeNode::centeredVertical(TreeNode* n,TreeNode* s)
 {
-    TreeNode* n00 = create(level-3);
+    TreeNode* n00 = nullptr;
     if(n != nullptr && n->sw != nullptr)
     {
         n00 = n->sw->se;
     }
-    TreeNode* n01 = create(level-3);
+    TreeNode* n01 = nullptr;
     if(n != nullptr && n->se != nullptr)
     {
         n01 = n->se->sw;
     }
-    TreeNode* n10 = create(level-3);
+    TreeNode* n10 = nullptr;
     if(s != nullptr && s->nw != nullptr)
     {
         n10 = s->nw->ne;
     }
-    TreeNode* n11 = create(level-3);
+    TreeNode* n11 = nullptr;
     if(s != nullptr && s->ne != nullptr)
     {
         n11 = s->ne->nw;
@@ -124,22 +124,22 @@ TreeNode* TreeNode::centeredVertical(TreeNode* n,TreeNode* s)
 }
 
 TreeNode *TreeNode::centeredHorizontal(TreeNode *w, TreeNode *e){
-    TreeNode* n00 = create(level-3);
+    TreeNode* n00 = nullptr;
     if(w != nullptr && w->ne != nullptr)
     {
         n00 = w->ne->se;
     }
-    TreeNode* n01 = create(level-3);
+    TreeNode* n01 = nullptr;
     if(e != nullptr && e->nw != nullptr)
     {
         n01 = e->nw->sw;
     }
-    TreeNode* n10 = create(level-3);
+    TreeNode* n10 = nullptr;
     if(w != nullptr && w->se != nullptr)
     {
         n10 = w->se->ne;
     }
-    TreeNode* n11 = create(level-3);
+    TreeNode* n11 = nullptr;
     if(e != nullptr && e->sw != nullptr)
     {
         n11 = e->sw->nw;
@@ -148,22 +148,22 @@ TreeNode *TreeNode::centeredHorizontal(TreeNode *w, TreeNode *e){
 }
 
 TreeNode *TreeNode::centeredSubSubnode(){
-    TreeNode* n00 = create(level-3);
+    TreeNode* n00 = nullptr;
     if(nw != nullptr && nw->se != nullptr)
     {
         n00 = nw->se->se;
     }
-    TreeNode* n01 = create(level-3);
+    TreeNode* n01 = nullptr;
     if(ne != nullptr && ne->sw != nullptr)
     {
         n01 = ne->sw->sw;
     }
-    TreeNode* n10 = create(level-3);
+    TreeNode* n10 = nullptr;
     if(sw != nullptr && sw->ne != nullptr)
     {
         n10 = sw->ne->ne;
     }
-    TreeNode* n11 = create(level-3);
+    TreeNode* n11 = nullptr;
     if(se != nullptr && se->nw != nullptr)
     {
         n11 = se->nw->nw;
@@ -431,12 +431,19 @@ string TreeNode::getLivingCell(const int& x, const int& y) const
     return ss.str();
 }
 
-string TreeNode::getDifference(const TreeNode* t, const int& x, const int& y) const {
+string TreeNode::getDifference(TreeNode* t, const int& x, const int& y) {
     stringstream ss;
     int x2, y2;
+
     if(t == nullptr)
     {
         return getLivingCell(x,y);
+    }
+    if(level > t->level){
+        return getDifferenceLevel(t, x, y);
+    }
+    if(t->level > level){
+        return t->getDifferenceLevel(this, x, y);
     }
     if(level == 0)
     {
@@ -506,6 +513,60 @@ string TreeNode::getDifference(const TreeNode* t, const int& x, const int& y) co
     }else {
         ss << sw->getDifference(t->sw, x2 - offset, y + offset);
     }
+    return ss.str();
+}
+
+string TreeNode::getDifferenceLevel(TreeNode *t, const int &x, const int &y) {
+    stringstream ss;
+    ss << centeredSubnode()->getDifference(t, x, y);
+    if(nw != nullptr && nw->nw != nullptr)
+        {
+            ss << nw->nw->getLivingCell(x, y);
+        }
+    if(nw != nullptr && nw->ne != nullptr)
+        {
+            ss << nw->ne->getLivingCell(x, y);
+        }
+    if(nw != nullptr && nw->sw != nullptr)
+        {
+            ss << nw->sw->getLivingCell(x, y);
+        }
+    if(ne != nullptr && ne->nw != nullptr)
+        {
+            ss << ne->nw->getLivingCell(x, y);
+        }
+    if(ne != nullptr && ne->ne != nullptr)
+        {
+            ss << ne->ne->getLivingCell(x, y);
+        }
+    if(ne != nullptr && ne->se != nullptr)
+        {
+            ss << ne->se->getLivingCell(x, y);
+        }
+    if(sw != nullptr && sw->nw != nullptr)
+        {
+            ss << sw->nw->getLivingCell(x, y);
+        }
+    if(sw != nullptr && sw->sw != nullptr)
+        {
+            ss << sw->sw->getLivingCell(x, y);
+        }
+    if(sw != nullptr && sw->se != nullptr)
+        {
+            ss << sw->se->getLivingCell(x, y);
+        }
+    if(se != nullptr && se->ne != nullptr)
+        {
+            ss << se->ne->getLivingCell(x, y);
+        }
+    if(se != nullptr && se->sw != nullptr)
+        {
+            ss << se->sw->getLivingCell(x, y);
+        }
+    if(se != nullptr && se->se != nullptr)
+        {
+            ss << se->se->getLivingCell(x, y);
+        }
     return ss.str();
 }
 

@@ -24,15 +24,17 @@ void afficheRoot(TreeNode* tree)
 
 int main() {
     TreeUniverse* universe = new TreeUniverse;
-    universe->setByte(-1,-1,true);
-    universe->setByte(0,0,true);
-    universe->setByte(1,0,true);
-    universe->setByte(-1,1,true);
-    universe->setByte(0,1,true);
+    universe->setByte(1,1,true);
+    universe->setByte(2,1,true);
+    universe->setByte(3,1,true);
+    universe->setByte(1,2,true);
+    universe->setByte(2,3,true);
     TreeNode* root = universe->getRoot();
-    //universe->runStep();
-    auto truc  = TreeHashMap::hash;
     afficheRoot(universe->getRoot());
+    universe->runStep();
+    afficheRoot(universe->getRoot());
+    cout << root->getDifference(universe->getRoot(),0,0) <<endl;
+
 
 
     return 0;

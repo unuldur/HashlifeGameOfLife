@@ -52,7 +52,7 @@ public:
 
     double getPopulation() const;
 
-    string getDifference(const TreeNode* t, const int& x,const int& y) const;
+    string getDifference(TreeNode* t, const int& x,const int& y);
 
 
 protected:
@@ -79,6 +79,7 @@ protected:
     string getLivingCell(const int& x,const int& y) const;
 
 
+    string getDifferenceLevel(TreeNode *t, const int &x, const int &y);
 };
 
 
